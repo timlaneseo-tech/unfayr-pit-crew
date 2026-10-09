@@ -64,11 +64,13 @@ export function parseSections(raw: string): string[] {
     if (/^[A-Za-z]:[\\/]/.test(s)) {
       const m = MSYS_ROOT.exec(s);
       if (!m) throw new Error(`"${s}" in --include is a Windows path, not a site section (Git Bash turns a leading / into one). ${SECTIONS_HINT}`);
-      s = m[1]!;
+      s = m[1]! || '/';
     }
-    s = s.replace(/\\/g, '/').replace(/^\/+|\/+$/g, '');
-    if (!s) continue;
-    const section = `/${s}/`;
+    const slashed = s.replace(/\\/g, '/');
+    s = slashed.replace(/^\/+|\/+$/g, '');
+    if (!s && !/^\/+$/.test(slashed)) continue;
+    // home, root and a lone / all mean the site root.
+    const section = !s || /^(home|root)$/i.test(s) ? '/' : `/${s}/`;
     if (!out.includes(section)) out.push(section);
   }
   if (!out.length) throw new Error(`--include names no sections. ${SECTIONS_HINT}`);

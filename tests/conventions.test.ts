@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { crawl, sampleFetcher } from '../scripts/lib/crawl.ts';
 import { extractPage, linkGraph } from '../scripts/lib/extract.ts';
-import { analyseTitles, candidateConventions, applyBrand, patternRegex } from '../scripts/lib/conventions.ts';
+import { analyseTitles, candidateConventions, applyBrand, patternRegex, guessBrand } from '../scripts/lib/conventions.ts';
 import { charLen } from '../scripts/lib/text.ts';
 import type { Convention, PageRecord, PageType } from '../scripts/lib/types.ts';
 
@@ -115,5 +115,35 @@ describe('patternRegex', () => {
   });
   it('returns null when no pattern for the type', () => {
     expect(patternRegex(c, 'other')).toBeNull();
+  });
+});
+
+describe('guessBrand', () => {
+  it('prefers the suffix most titles share after a separator', () => {
+    const pages = ['A', 'B', 'C', 'D'].map((x) => pg(`${x} Part – RTL Equipment Parts Store`));
+    expect(guessBrand('parts.rtlequipment.com', pages)).toBe('RTL Equipment Parts Store');
+  });
+  it('prefers a shared prefix brand too', () => {
+    const pages = ['A', 'B', 'C'].map((x) => pg(`Acme Tools | ${x} drill`));
+    expect(guessBrand('www.acme.com', pages)).toBe('Acme Tools');
+  });
+  it('falls back to the registrable domain label, title-cased, skipping subdomain prefixes', () => {
+    const pages = [pg('Alpha thing'), pg('Beta other'), pg('Gamma – Delta')];
+    expect(guessBrand('shop.example.com', pages)).toBe('Example');
+    expect(guessBrand('www.example.co.uk', [])).toBe('Example');
+    expect(guessBrand('example.com', [])).toBe('Example');
+  });
+});
+
+describe('guessBrand: casing and generic segments', () => {
+  it('counts segments case-insensitively', () => {
+    const pages = ['A', 'B', 'C', 'D'].map((x, i) => pg(`${x} Part | ${i % 2 ? 'Acme Tools' : 'ACME TOOLS'}`));
+    expect(guessBrand('acme.com', pages).toLowerCase()).toBe('acme tools');
+  });
+  it('ignores segments that are only generic words', () => {
+    const pages = ['A', 'B', 'C', 'D'].map((x) => pg(`${x} drills | Home`));
+    expect(guessBrand('shop.acme.com', pages)).toBe('Acme');
+    const pages2 = ['A', 'B', 'C'].map((x) => pg(`${x} drill – Products`));
+    expect(guessBrand('acme.com', pages2)).toBe('Acme');
   });
 });

@@ -2,6 +2,13 @@ import { describe, it, expect } from 'vitest';
 import { parseSections } from '../scripts/lib/args.ts';
 
 describe('parseSections (--include)', () => {
+  it('maps home, root and a lone slash to the site root /', () => {
+    expect(parseSections('home,collections')).toEqual(['/', '/collections/']);
+    expect(parseSections('root')).toEqual(['/']);
+    expect(parseSections('/')).toEqual(['/']);
+    expect(parseSections('Home,/,root')).toEqual(['/']);
+  });
+
   it('accepts section names with or without slashes, normalised to /<name>/', () => {
     expect(parseSections('collections,pages')).toEqual(['/collections/', '/pages/']);
     expect(parseSections('/collections/,/pages/')).toEqual(['/collections/', '/pages/']);
@@ -31,6 +38,6 @@ describe('parseSections (--include)', () => {
   });
 
   it('throws when nothing is left to include', () => {
-    expect(() => parseSections(' , / ')).toThrow(/--include collections,pages/);
+    expect(() => parseSections(' , ')).toThrow(/--include collections,pages/);
   });
 });

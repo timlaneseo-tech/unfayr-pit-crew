@@ -53,6 +53,24 @@ describe('crawl: trailhead (sitemap index, cap)', () => {
   });
 });
 
+describe('crawl: include home', () => {
+  it('home selects the root URL only; a capped listing names the root home', async () => {
+    const urls = ['/', '/a', '/b', '/collections/c'].map((x) => `<url><loc>https://h.example${x}</loc></url>`).join('');
+    const small: Fetcher = async (u) => (u.endsWith('/sitemap.xml') ? xml(u, `<urlset>${urls}</urlset>`) : u.endsWith('/robots.txt') ? missing(u) : ok(u, html('<h1>x</h1>')));
+    const capped = await crawl('https://h.example', { fetcher: small, cap: 3 });
+    expect(capped.capped).toBe(true);
+    expect(capped.sections.home).toBe(1);
+    expect(capped.sections['/']).toBeUndefined();
+    const r = await crawl('https://h.example', { fetcher: small, cap: 3, include: ['/', '/collections/'] });
+    const paths = r.pages.map((p) => new URL(p.url).pathname);
+    expect(paths).toContain('/');
+    expect(paths.filter((x) => x !== '/').every((x) => x.startsWith('/collections/'))).toBe(true);
+    expect(r.emptySections).toBeUndefined();
+    const only = await crawl('https://h.example', { fetcher: small, cap: 3, include: ['/'] });
+    expect(only.pages.map((p) => new URL(p.url).pathname)).toEqual(['/']);
+  });
+});
+
 describe('crawl: link fallback', () => {
   const noMaps = (): Fetcher => {
     const base = sampleFetcher('ridgeline-plumbing.example');

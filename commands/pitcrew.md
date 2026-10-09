@@ -8,7 +8,7 @@ allowed-tools: Bash(node *), Bash(npm *), Bash(git -C * diff*), Bash(git -C * st
 
 The person said something like "Run my site example.com through Pit Crew". Your job is to run the whole process and finish with the workbook open in front of them. They are a business owner or marketer, not a developer. Pit Crew's line: Pit fixes every page in one stop. You drive.
 
-`${CLAUDE_PLUGIN_ROOT}` is the plugin folder. Every script is called as `node "${CLAUDE_PLUGIN_ROOT}/scripts/pitcrew.ts" <subcommand> ...` and prints JSON. Results are saved under the Pit Crew results folder (`Documents/Pit Crew`, or `PITCREW_HOME`), so it does not matter which folder you run from. Never pass an argument that starts with `/`: on Windows, Git Bash rewrites it into a folder path. Give crawl sections as names (`--include collections,pages`) and pages as full addresses.
+`${CLAUDE_PLUGIN_ROOT}` is the plugin folder. Every script is called as `node "${CLAUDE_PLUGIN_ROOT}/scripts/pitcrew.ts" <subcommand> ...` and prints JSON. Results are saved under the Pit Crew results folder (`Documents/Pit Crew`, or `PITCREW_HOME`), so it does not matter which folder you run from. Never pass an argument that starts with `/`: on Windows, Git Bash rewrites it into a folder path. Give crawl sections as names (`--include collections,pages`; `home` means the homepage, as in `--include home,collections`) and pages as full addresses.
 
 If `${CLAUDE_PLUGIN_ROOT}/node_modules` does not exist, run `npm install --omit=dev --prefix "${CLAUDE_PLUGIN_ROOT}"` once, quietly. Node 22.18 or newer is required; if `node --version` is lower, tell them to install the LTS version from https://nodejs.org, then reopen Claude Code.
 

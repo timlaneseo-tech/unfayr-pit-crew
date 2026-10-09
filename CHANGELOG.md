@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1 - 2026-10-09
+
+Fixes from a first run on a Shopify store.
+
+- The brand guess no longer takes the first host label (parts.rtlequipment.com was guessed as "Parts"). It now prefers the name most page titles end or start with after a separator, and otherwise uses the main domain name with subdomains such as www, shop and parts ignored.
+- `--include home` (also `root` or `/`) selects the homepage when a site is over the page cap. The first crawl lists the homepage as `home`.
+- The top 25 no longer fall back to alphabetical order when click data is thin. Pages with click data keep their click order. Among pages without clicks, those matching your categories or main services come first (a match in the page address before a match in the title, brand name ignored), privacy, opt-out, cart and similar pages go last, and near-empty pages rank after pages with content.
+
 ## 1.0.0 - 2026-10-09
 
 First release.

@@ -315,6 +315,11 @@ function countSections(urls: string[]): Record<string, number> {
   return sections;
 }
 
+/** The site root is listed as "home" in a section listing the owner picks from. */
+function homeKey(sections: Record<string, number>): Record<string, number> {
+  return Object.fromEntries(Object.entries(sections).map(([k, v]) => [k === '/' ? 'home' : k, v]));
+}
+
 const sameHost = (a: string, b: string) => hostOf(a) === hostOf(b);
 const dropOf = (url: string, v: Extract<Verdict, { kind: 'drop' }>): CrawlResult['dropped'][number] =>
   (v.httpStatus !== undefined ? { url, reason: v.reason, httpStatus: v.httpStatus } : { url, reason: v.reason });
@@ -328,7 +333,7 @@ export async function crawl(origin: string, opts: CrawlOptions): Promise<CrawlRe
   /** The include sections none of these URLs fall in, as a spreadable result field. */
   const emptyOf = (urls: string[]): { emptySections?: string[] } => {
     const empty = (include ?? []).filter((s) => !urls.some((u) => sectionOf(u) === s));
-    return empty.length ? { emptySections: empty } : {};
+    return empty.length ? { emptySections: empty.map((e) => (e === '/' ? 'home' : e)) } : {};
   };
   const base = origin.replace(/\/+$/, '');
   const dropped: CrawlResult['dropped'] = [];
@@ -362,7 +367,7 @@ export async function crawl(origin: string, opts: CrawlOptions): Promise<CrawlRe
       candidates.push(n);
     }
     const sections = countSections(candidates);
-    if (!include && candidates.length > cap) return { pages: [], dropped, sections, source: 'sitemap', capped: true };
+    if (!include && candidates.length > cap) return { pages: [], dropped, sections: homeKey(sections), source: 'sitemap', capped: true };
     let chosen = include ? candidates.filter((u) => include.includes(sectionOf(u))) : candidates;
     const selected = chosen.length;
     const capped = chosen.length > cap;

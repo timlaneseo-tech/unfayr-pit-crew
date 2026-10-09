@@ -8,7 +8,7 @@ import { capFromEnv, crawl, crawlBlockedMessage, networkFetcher, sampleFetcher, 
 import { extractPage, linkGraph } from './lib/extract.ts';
 import { detectPlatform } from './lib/platform.ts';
 import { readout } from './lib/readout.ts';
-import { analyseTitles, candidateConventions } from './lib/conventions.ts';
+import { analyseTitles, candidateConventions, guessBrand } from './lib/conventions.ts';
 import { selectTop } from './lib/select-top.ts';
 import { lintAll } from './lib/lint.ts';
 import {
@@ -205,14 +205,14 @@ function cmdStatus(args: ParsedArgs) {
 function cmdConventions(args: ParsedArgs) {
   const { host, run } = ctx(args);
   const pages = pagesOf(run);
-  const brand = flagString(args, 'brand') ?? readInterview(host)?.brand ?? host.split('.')[0]!.replace(/^./, (c) => c.toUpperCase());
+  const brand = flagString(args, 'brand') ?? readInterview(host)?.brand ?? guessBrand(host, pages);
   const analysis = analyseTitles(pages, brand);
   const types = [...new Set(pages.map((p) => p.type))];
   return { host, brand, analysis, candidates: candidateConventions(analysis, brand, types) };
 }
 
 function cmdTop(args: ParsedArgs) {
-  const { run } = ctx(args);
+  const { host, run } = ctx(args);
   const pages = pagesOf(run);
   let clicks: Map<string, number> | undefined;
   const cf = flagString(args, 'clicks');
@@ -225,7 +225,7 @@ function cmdTop(args: ParsedArgs) {
       for (const [u, n] of Object.entries(raw)) clicks.set(u, Number(n) || 0);
     } else fail('The clicks file must be an object of url to clicks, or a list of {url, clicks}.');
   }
-  const top = selectTop(pages, clicks);
+  const top = selectTop(pages, clicks, 25, readInterview(host));
   writeFileSync(join(run, 'top.json'), JSON.stringify(top, null, 2), 'utf8');
   return { run, count: top.length, top, usedClicks: !!clicks };
 }

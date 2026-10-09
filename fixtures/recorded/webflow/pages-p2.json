@@ -1,0 +1,44 @@
+{
+ "pages": [
+  {
+   "id": "6a0000000000000000000003",
+   "siteId": "5f0000000000000000000001",
+   "title": "Contact",
+   "slug": "contact",
+   "publishedPath": "/Contact/",
+   "seo": {
+    "title": "Contact",
+    "description": null
+   }
+  },
+  {
+   "id": "6a0000000000000000000004",
+   "siteId": "5f0000000000000000000001",
+   "title": "Post template",
+   "slug": "post",
+   "publishedPath": "/blog/post-template",
+   "collectionId": "6c0000000000000000000001",
+   "seo": {
+    "title": "Template",
+    "description": "Template"
+   }
+  },
+  {
+   "id": "6a0000000000000000000001",
+   "siteId": "5f0000000000000000000001",
+   "title": "Home",
+   "slug": "",
+   "publishedPath": "/",
+   "collectionId": null,
+   "seo": {
+    "title": "Old home title",
+    "description": "Old home description"
+   }
+  }
+ ],
+ "pagination": {
+  "limit": 2,
+  "offset": 2,
+  "total": 4
+ }
+}

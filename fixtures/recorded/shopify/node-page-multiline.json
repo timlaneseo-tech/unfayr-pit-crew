@@ -1,0 +1,1 @@
+{ "data": { "node": { "__typename": "Page", "id": "gid://shopify/Page/3003", "title": "About Us", "titleTag": { "value": "About Trailhead", "type": "multi_line_text_field" }, "descriptionTag": { "value": "Who we are.", "type": "multi_line_text_field" } } } }

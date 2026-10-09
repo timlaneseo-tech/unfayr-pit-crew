@@ -1,0 +1,25 @@
+{
+ "items": [
+  {
+   "id": "6i0000000000000000000002",
+   "fieldData": {
+    "name": "Second",
+    "slug": "second-post",
+    "seo-title": "Second t",
+    "seo-desc": "Second d"
+   }
+  },
+  {
+   "id": "6i00000000000000000000a1",
+   "isArchived": true,
+   "fieldData": {
+    "slug": "second-post"
+   }
+  }
+ ],
+ "pagination": {
+  "limit": 1,
+  "offset": 1,
+  "total": 2
+ }
+}

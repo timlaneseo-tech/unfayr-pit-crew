@@ -1,0 +1,294 @@
+[
+  {
+    "url": "https://ridgeline-plumbing.example/",
+    "title": "Ridgeline Plumbing | Boise plumbers for homes and shops",
+    "meta": "Boise plumbing repair and installation for homes and small shops, serving Boise since 1998. Upfront quotes and plumbers who show up on time.",
+    "h1": null,
+    "reason": "Brand first on the home page; adds the service area and the 1998 proof from the interview.",
+    "sources": [
+      "page",
+      "interview"
+    ],
+    "deep": {
+      "query": "boise plumber",
+      "intro": "Ridgeline Plumbing has been serving Boise since 1998.",
+      "h2s": [
+        "Plumbing services",
+        "Where we work"
+      ],
+      "faq": [
+        {
+          "q": "Do you give upfront quotes?",
+          "a": "Yes. You get the price before the work starts."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "Serving Boise since 1998",
+        "Rated 4.9 stars from 312 reviews",
+        "Service area: Boise and Nampa",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/water-heater-repair",
+    "title": "Water heater repair in Boise | Ridgeline Plumbing",
+    "meta": "Water heater repair and replacement in Boise, Idaho. Get an upfront quote and a plumber who arrives when scheduled. Call Ridgeline Plumbing.",
+    "h1": "Water heater repair in Boise",
+    "reason": "Shorter title in the {Service} in {City} pattern; unique meta replaces the shared one.",
+    "sources": [
+      "page"
+    ],
+    "deep": {
+      "query": "water heater repair boise",
+      "intro": "Water heater repair and replacement for Boise homes.",
+      "h2s": [
+        "Signs your water heater is failing"
+      ],
+      "faq": [
+        {
+          "q": "Should I repair or replace?",
+          "a": "It depends on age and the type of fault."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "A water heater repair is a fix to a tank or tankless unit; replacement is for units past repair",
+        "[ADD: starting price for a water heater repair]",
+        "Service area: Boise and Nampa",
+        "[ADD: typical time to complete a repair]",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/drain-cleaning",
+    "title": "Drain cleaning in Boise | Ridgeline Plumbing",
+    "meta": "Clear slow and blocked drains in Boise, Idaho. Ridgeline Plumbing gives an upfront quote before any drain cleaning work begins.",
+    "h1": null,
+    "reason": "Unique meta; title already close to the pattern.",
+    "sources": [
+      "page"
+    ],
+    "deep": {
+      "query": "drain cleaning boise",
+      "intro": "Slow or blocked drains cleared across Boise.",
+      "h2s": [
+        "Common causes of clogs"
+      ],
+      "faq": [
+        {
+          "q": "How fast can you come out?",
+          "a": "We book the next open slot."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "Drain cleaning clears grease, hair and roots with cable machines or high-pressure water jetting",
+        "[ADD: starting price for drain cleaning]",
+        "Service area: Boise and Nampa",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/sewer-line-repair",
+    "title": "Sewer line repair in Boise | Ridgeline Plumbing",
+    "meta": "Sewer line repair and replacement in Boise from a team with 25 years of experience. Camera inspection and an upfront quote.",
+    "h1": null,
+    "reason": "Shorter title; meta leads with the camera inspection offer.",
+    "sources": [
+      "page"
+    ],
+    "deep": {
+      "query": "sewer line repair boise",
+      "intro": "Sewer line repair, camera inspection and replacement.",
+      "h2s": [
+        "Trenchless options"
+      ],
+      "faq": [
+        {
+          "q": "Do you use a camera?",
+          "a": "Yes, we inspect before we quote."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "A video camera finds the exact depth and location of sewer damage before any digging",
+        "A written estimate is given before digging starts",
+        "[ADD: starting price for a camera inspection]",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/leak-detection",
+    "title": "Leak detection in Boise | Ridgeline Plumbing",
+    "meta": "Find hidden leaks in Boise homes before they cause damage. Ridgeline Plumbing locates the leak, explains the fix and quotes upfront.",
+    "h1": "Leak detection in Boise",
+    "reason": "Shorter title with the ampersand gone; unique meta.",
+    "sources": [
+      "page"
+    ],
+    "deep": {
+      "query": "leak detection boise",
+      "intro": "Hidden leaks found before they cause damage.",
+      "h2s": [
+        "Signs of a hidden leak"
+      ],
+      "faq": [
+        {
+          "q": "Will you need to open walls?",
+          "a": "Only when the leak cannot be reached any other way."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "Leaks are found with acoustic listening equipment and thermal imaging",
+        "[ADD: starting price for leak detection]",
+        "Service area: Boise and Nampa",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/emergency-plumbing",
+    "title": "Emergency plumber in Boise | Ridgeline Plumbing",
+    "meta": "Emergency plumbing in Boise, day or night. Call [ADD: emergency phone number] and a Ridgeline Plumbing plumber heads your way.",
+    "h1": null,
+    "reason": "Needs the real emergency phone number; the interview left it blank.",
+    "sources": [
+      "page",
+      "interview"
+    ],
+    "deep": {
+      "query": "emergency plumber boise",
+      "intro": "Emergency plumbing, day or night.",
+      "h2s": [
+        "What counts as an emergency"
+      ],
+      "faq": [
+        {
+          "q": "Do you work nights?",
+          "a": "Yes, the emergency line is staffed day and night."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "Emergency calls are answered by a real person, day or night",
+        "[ADD: typical arrival time for emergency calls]",
+        "[ADD: emergency phone number]",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/service-areas/boise",
+    "title": "Plumber in Boise, Idaho | Ridgeline Plumbing",
+    "meta": "Ridgeline Plumbing serves Boise homes and shops with repairs, installs and upfront quotes. Serving Boise since 1998.",
+    "h1": null,
+    "reason": "Adds proof from the interview.",
+    "sources": [
+      "page",
+      "interview"
+    ],
+    "deep": {
+      "query": "plumber boise idaho",
+      "intro": "Plumbing for Boise homes and shops.",
+      "h2s": [
+        "Neighbourhoods we serve"
+      ],
+      "faq": [
+        {
+          "q": "Which areas of Boise?",
+          "a": "All of Boise and nearby towns."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "Service area: Boise and Nampa",
+        "[ADD: typical response time]",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/service-areas/nampa",
+    "title": "Plumber in Nampa, Idaho | Ridgeline Plumbing",
+    "meta": "Plumbing repair and installation in Nampa, Idaho from Ridgeline Plumbing. Upfront quotes and plumbers who arrive on time.",
+    "h1": "Plumber in Nampa, Idaho",
+    "reason": "The page had no H1; adds one that matches the title.",
+    "sources": [
+      "page"
+    ],
+    "deep": {
+      "query": "plumber nampa idaho",
+      "intro": "Plumbing for Nampa homes and shops.",
+      "h2s": [
+        "Services in Nampa"
+      ],
+      "faq": [
+        {
+          "q": "Do you serve Nampa?",
+          "a": "Yes, we work across Nampa."
+        }
+      ],
+      "schema": "LocalBusiness",
+      "altFixes": [],
+      "citationFacts": [
+        "Service area: Boise and Nampa",
+        "[ADD: typical response time]",
+        "[ADD: last-updated date shown on the page]"
+      ]
+    }
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/blog/water-heater-anode-rod",
+    "title": "Anode rod replacement: signs yours is failing",
+    "meta": "How to tell when your water heater anode rod needs replacing, what to check and when to call a plumber at Ridgeline Plumbing.",
+    "h1": "Anode rod replacement: the signs yours is failing",
+    "reason": "Shorter, sentence case, fits the article pattern.",
+    "sources": [
+      "page"
+    ]
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/blog/frozen-pipes-boise",
+    "title": "Frozen pipes in Boise: how to prevent them",
+    "meta": "Why pipes freeze in Boise winters, how to stop it before the first cold snap, and what to do if a pipe has already frozen.",
+    "h1": null,
+    "reason": "Adds the pattern split and a meta that fits.",
+    "sources": [
+      "page"
+    ]
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/blog/sewer-camera-inspection-cost",
+    "title": "Sewer camera inspection cost: what to expect",
+    "meta": "What a sewer line camera inspection costs, what affects the price and when an inspection is worth booking before you buy a home.",
+    "h1": null,
+    "reason": "Pattern fit; adds a missing meta.",
+    "sources": [
+      "page"
+    ]
+  },
+  {
+    "url": "https://ridgeline-plumbing.example/about",
+    "title": "About our family plumbing team | Ridgeline Plumbing",
+    "meta": "Meet the family plumbers behind Ridgeline Plumbing, serving Boise since 1998, and how we quote, schedule and stand behind our work.",
+    "h1": null,
+    "reason": "Unique meta with the 1998 proof.",
+    "sources": [
+      "page",
+      "interview"
+    ]
+  }
+]

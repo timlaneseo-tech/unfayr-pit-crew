@@ -1,0 +1,28 @@
+{
+  "name": "pitcrew",
+  "version": "1.0.0",
+  "description": "Claude Code plugin: rewrites a whole site's titles, meta descriptions and H1s in one naming style, then publishes the approved changes.",
+  "type": "module",
+  "private": true,
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "Unfayr (https://unfayr.com)",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm run test && node scripts/check-sample.ts"
+  },
+  "dependencies": {
+    "exceljs": "^4.0.0",
+    "he": "^1.2.0",
+    "node-html-parser": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/he": "^1.2.3",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  }
+}

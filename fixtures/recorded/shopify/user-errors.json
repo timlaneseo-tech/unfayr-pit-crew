@@ -1,0 +1,1 @@
+{ "data": { "productUpdate": { "product": null, "userErrors": [ { "field": ["product", "seo", "title"], "message": "Title is too long" }, { "field": ["product", "title"], "message": "Title can't be blank" } ] } } }

@@ -1,0 +1,4 @@
+{ "data": { "articles": { "nodes": [
+  { "id": "gid://shopify/Article/4001", "handle": "winter-tips", "title": "Winter tips", "blog": { "handle": "other" }, "titleTag": null, "descriptionTag": null },
+  { "id": "gid://shopify/Article/4004", "handle": "winter-tips", "title": "Winter tips", "blog": { "handle": "news" }, "titleTag": { "value": "Winter riding tips" }, "descriptionTag": null }
+] } } }

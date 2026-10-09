@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "model": "sonnet",
+  "arms": {
+    "pitcrew": "Pit Crew: the write-page skill instructions, the batch file (pages and interview) and the instruction to reply with the batch output JSON.",
+    "plain": "Plain Claude: \"Rewrite the titles, metas and H1s for these pages\" with the same page extracts as JSON, and nothing else."
+  },
+  "scenarios": [
+    {
+      "id": "ridgeline",
+      "kind": "fixture",
+      "site": "ridgeline-plumbing.example",
+      "pages": 12,
+      "description": "Local service business: home, five services, two locations, three articles and About. Designed with 3 long titles, 6 shared metas and 1 page without an H1."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+{ "data": { "pages": { "nodes": [
+  { "id": "gid://shopify/Page/3099", "handle": "about-us-old", "title": "About us old", "titleTag": null, "descriptionTag": null },
+  { "id": "gid://shopify/Page/3003", "handle": "about-us", "title": "About Us", "titleTag": { "value": "About Trailhead" }, "descriptionTag": { "value": "Who we are." } }
+] } } }

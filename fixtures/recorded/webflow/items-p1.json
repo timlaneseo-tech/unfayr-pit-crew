@@ -1,0 +1,18 @@
+{
+ "items": [
+  {
+   "id": "6i0000000000000000000001",
+   "fieldData": {
+    "name": "First",
+    "slug": "first-post",
+    "seo-title": "First t",
+    "seo-desc": "First d"
+   }
+  }
+ ],
+ "pagination": {
+  "limit": 1,
+  "offset": 0,
+  "total": 2
+ }
+}

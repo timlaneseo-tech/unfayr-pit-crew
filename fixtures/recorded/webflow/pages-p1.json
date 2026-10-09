@@ -1,0 +1,32 @@
+{
+ "pages": [
+  {
+   "id": "6a00000000000000000000d1",
+   "siteId": "5f0000000000000000000001",
+   "title": "About draft",
+   "slug": "about",
+   "publishedPath": "/about",
+   "isDraft": true,
+   "seo": {
+    "title": "Draft",
+    "description": "Draft"
+   }
+  },
+  {
+   "id": "6a0000000000000000000002",
+   "siteId": "5f0000000000000000000001",
+   "title": "About",
+   "slug": "about",
+   "publishedPath": "/about",
+   "seo": {
+    "title": "About us",
+    "description": "About old"
+   }
+  }
+ ],
+ "pagination": {
+  "limit": 2,
+  "offset": 0,
+  "total": 4
+ }
+}

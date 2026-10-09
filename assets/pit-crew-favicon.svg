@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="32" height="32" role="img" aria-label="Pit Crew">
+  <title>Pit Crew</title>
+  <rect x="0" y="0" width="1024" height="1024" rx="235.52" fill="#1E1BF5"/>
+  <circle cx="512" cy="512" r="348.16" fill="#FFFFFF"/>
+  <polygon points="703.49,512 607.74,677.83 416.26,677.83 320.51,512 416.26,346.17 607.74,346.17" fill="#1E1BF5"/>
+</svg>

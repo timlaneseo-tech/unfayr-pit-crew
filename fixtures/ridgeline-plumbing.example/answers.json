@@ -1,0 +1,42 @@
+{
+  "brand": "Ridgeline Plumbing",
+  "answers": [
+    {
+      "id": "business",
+      "question": "What does the business do, in a sentence?",
+      "answer": "Residential and small-business plumbing repair and installation in the Treasure Valley."
+    },
+    {
+      "id": "history",
+      "question": "Anything that proves you are established?",
+      "answer": "Serving Boise since 1998"
+    },
+    {
+      "id": "areas",
+      "question": "Which towns do you serve?",
+      "answer": "Boise and Nampa"
+    },
+    {
+      "id": "differentiator",
+      "question": "What do customers say sets you apart?",
+      "answer": "Upfront quotes and plumbers who show up when they say they will."
+    },
+    {
+      "id": "phone",
+      "question": "Phone number to show?",
+      "answer": null
+    }
+  ],
+  "convention": {
+    "separator": "|",
+    "brand": "Ridgeline Plumbing",
+    "brandPosition": "end-if-fits",
+    "case": "sentence",
+    "patterns": {
+      "home": "{Brand promise}",
+      "service": "{Service} in {City}",
+      "location": "{Service} in {City}",
+      "article": "{Topic}: {Promise}"
+    }
+  }
+}

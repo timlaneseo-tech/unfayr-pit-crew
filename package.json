@@ -1,6 +1,6 @@
 {
   "name": "pitcrew",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Claude Code plugin: rewrites a whole site's titles, meta descriptions and H1s in one naming style, then publishes the approved changes.",
   "type": "module",
   "private": true,

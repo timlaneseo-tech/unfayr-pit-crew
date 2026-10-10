@@ -4,11 +4,14 @@
 // Existing files in OUT_DIR are replaced, except .git/. The "unfayr" marketplace lives in the unfayr-ref repo
 // and points at this repo, so no marketplace file is written here.
 // The export never pushes, tags or releases anything.
-import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const VERSION = '1.0.0';
+/** Read from the plugin manifest so the log line never drifts from the version being exported. */
+const VERSION: string = JSON.parse(
+  readFileSync(fileURLToPath(new URL('../.claude-plugin/plugin.json', import.meta.url)), 'utf8'),
+).version;
 /** Top-level entries that make up the public repo. Everything else (docs/, .superpowers/, sites/, ...) stays private. */
 export const INCLUDE = [
   '.claude-plugin', 'commands', 'skills', 'scripts', 'assets', 'fixtures', 'tests', 'evals', 'tools',

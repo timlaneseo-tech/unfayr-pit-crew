@@ -74,3 +74,24 @@ describe('handoff corrupt file', () => {
     expect(readFileSync(join(run, 'onpage.json'), 'utf8')).toBe('{oops');
   });
 });
+
+describe('replaceFile (Windows file locks)', () => {
+  it('retries a locked rename, then copies over the target when the lock never clears', async () => {
+    const { existsSync } = await import('node:fs');
+    const { replaceFile } = await import('../scripts/lib/handoff.ts');
+    const d = mkdtempSync(join(tmpdir(), 'pc-rf-'));
+    const tmp = join(d, 'a.tmp'), dest = join(d, 'a.json');
+    writeFileSync(tmp, 'new'); writeFileSync(dest, 'old');
+    let calls = 0;
+    replaceFile(tmp, dest, () => { calls++; const e = new Error('locked') as NodeJS.ErrnoException; e.code = 'EPERM'; throw e; });
+    expect(calls).toBe(5);
+    expect(readFileSync(dest, 'utf8')).toBe('new');
+    expect(existsSync(tmp)).toBe(false);
+    let n = 0;
+    writeFileSync(tmp, 'newer');
+    replaceFile(tmp, dest, (a, b) => { if (++n < 3) { const e = new Error('busy') as NodeJS.ErrnoException; e.code = 'EBUSY'; throw e; } writeFileSync(b, readFileSync(a, 'utf8')); });
+    expect(n).toBe(3);
+    expect(readFileSync(dest, 'utf8')).toBe('newer');
+    expect(() => replaceFile(join(d, 'missing'), dest, () => { const e = new Error('no') as NodeJS.ErrnoException; e.code = 'ENOENT'; throw e; })).toThrow('no');
+  });
+});

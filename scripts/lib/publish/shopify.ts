@@ -75,7 +75,8 @@ export function shopifyAdapter(cfg: ShopifyConfig): Adapter {
         headers: { 'Content-Type': 'application/json', 'X-Shopify-Access-Token': cfg.token },
         body: JSON.stringify({ query, variables }),
       });
-      let throttled = res.status === 429;
+      // 429 and transient gateway errors (502/503/504) are retried; SEO field writes are idempotent, so a retry is safe.
+      let throttled = res.status === 429 || res.status === 502 || res.status === 503 || res.status === 504;
       let json: any;
       if (!throttled) {
         // 403 or ACCESS_DENIED: the app lacks a scope for this kind of record. 401 (bad token) stays a plain error.

@@ -81,7 +81,7 @@ describe('crawl (I6, M3, M8)', () => {
     expect(truncationMessage(1000, 1234, ['/products/', '/blogs/'])).toBe('Kept the first 1,000 of 1,234 pages in /products/ and /blogs/.');
   });
 
-  it('retries a page once after a 429 or 503, waiting Retry-After capped at 30 s (M3)', async () => {
+  it('retries a page after a 429 or 503, waiting Retry-After capped at 30 s, then slows to a 1 s gap (M3)', async () => {
     const waits: number[] = [];
     const tries = new Map<string, number>();
     const fetcher: Fetcher = async (u) => {
@@ -93,11 +93,11 @@ describe('crawl (I6, M3, M8)', () => {
     };
     const r = await crawl(O, { fetcher, sleep: async (ms) => { waits.push(ms); } });
     expect(r.pages.map((p) => p.url)).toEqual([`${O}/`, `${O}/b`]);
-    expect(waits).toEqual([30_000, 3_000]);
+    expect(waits).toEqual([30_000, 1_000, 3_000]);
     expect(tries.get(`${O}/`)).toBe(2);
   });
 
-  it('gives up after one retry and records the status', async () => {
+  it('gives up after 5 tries and records the status', async () => {
     const fetcher: Fetcher = async (u) => (u.endsWith('/robots.txt') || u.endsWith('/sitemap.xml') ? res(u, 404) : res(u, 503));
     const r = await crawl(O, { fetcher, sleep: async () => {} });
     expect(r.pages).toEqual([]);

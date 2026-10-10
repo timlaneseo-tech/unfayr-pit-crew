@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.2 - 2026-10-09
+
+Fixes from a 1,682-product Shopify run.
+
+- `crawl --offset N` skips the first N pages of the chosen sections, so a section over the 1,000-page cap can run in parts (for example `--include products --offset 1000` with a new `--date` label).
+- A rate-limited store no longer loses pages. A 429 or 503 is retried up to 5 times with backoff (2, 4, 8, 16 s, or the server's Retry-After), and after the first one the rest of the crawl runs one page at a time with a 1 s gap.
+- Publishing to Shopify retries transient 502, 503 and 504 answers like a throttle. SEO field writes are idempotent, so a retry is safe.
+- Saving onpage.json on Windows retries when a virus scanner or the indexer holds the file, then falls back to copying, instead of warning on every change.
+
 ## 1.0.1 - 2026-10-09
 
 Fixes from a first run on a Shopify store.

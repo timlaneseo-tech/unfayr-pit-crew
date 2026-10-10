@@ -236,6 +236,63 @@ describe('crawl: request bounds, hosts, include in link mode', () => {
     expect(r.pages.map((p) => p.url).sort()).toEqual(['https://inc.example/shop/1', 'https://inc.example/shop/2']);
   });
 
+  it('offset skips the first chosen sitemap pages so a large section can run in parts', async () => {
+    const urls = Array.from({ length: 7 }, (_, i) => `<url><loc>https://o.example/products/p${i}</loc></url>`).join('')
+      + '<url><loc>https://o.example/pages/about</loc></url>';
+    const fetcher: Fetcher = async (u) => {
+      if (u.endsWith('/sitemap.xml')) return xml(u, `<urlset>${urls}</urlset>`);
+      if (u.endsWith('/robots.txt')) return missing(u);
+      return ok(u, html('<h1>x</h1>'));
+    };
+    const part2 = await crawl('https://o.example', { fetcher, cap: 3, include: ['/products/'], offset: 3 });
+    expect(part2.pages.map((p) => p.url)).toEqual(['https://o.example/products/p3', 'https://o.example/products/p4', 'https://o.example/products/p5']);
+    expect(part2.selected).toBe(7);
+    expect(part2.capped).toBe(true);
+    const last = await crawl('https://o.example', { fetcher, cap: 3, include: ['/products/'], offset: 6 });
+    expect(last.pages.map((p) => p.url)).toEqual(['https://o.example/products/p6']);
+    expect(last.capped).toBe(false);
+  });
+
+  it('keeps backing off on 429 so a rate-limited store is still crawled, and gives up after 5 tries', async () => {
+    const hits: Record<string, number> = {};
+    const waits: number[] = [];
+    const urls = '<url><loc>https://r.example/products/slow</loc></url><url><loc>https://r.example/products/never</loc></url>';
+    const fetcher: Fetcher = async (u) => {
+      if (u.endsWith('/sitemap.xml')) return xml(u, `<urlset>${urls}</urlset>`);
+      if (u.endsWith('/robots.txt')) return missing(u);
+      hits[u] = (hits[u] ?? 0) + 1;
+      if (u.endsWith('/never') || hits[u]! <= 3) return { status: 429, type: '', body: '', finalUrl: u, headers: {} };
+      return ok(u, html('<h1>x</h1>'));
+    };
+    const r = await crawl('https://r.example', { fetcher, include: ['/products/'], sleep: async (ms) => { waits.push(ms); } });
+    expect(r.pages.map((p) => p.url)).toEqual(['https://r.example/products/slow']);
+    expect(hits['https://r.example/products/never']).toBe(5);
+    expect(r.dropped).toEqual([{ url: 'https://r.example/products/never', reason: 'status', httpStatus: 429 }]);
+    expect(Math.max(...waits)).toBeLessThanOrEqual(30_000);
+  });
+
+  it('after the first 429 the crawl slows to one fetch at a time with a gap, and still keeps every page', async () => {
+    let inflight = 0;
+    let limited = false;
+    let maxAfter = 0;
+    const waits: number[] = [];
+    const urls = Array.from({ length: 20 }, (_, i) => `<url><loc>https://t.example/p${i}</loc></url>`).join('');
+    const fetcher: Fetcher = async (u) => {
+      if (u.endsWith('/sitemap.xml')) return xml(u, `<urlset>${urls}</urlset>`);
+      if (u.endsWith('/robots.txt')) return missing(u);
+      inflight++;
+      await new Promise((r) => setTimeout(r, 2));
+      inflight--;
+      if (u.endsWith('/p0') && !limited) { limited = true; return { status: 429, type: '', body: '', finalUrl: u, headers: {} }; }
+      if (limited) maxAfter = Math.max(maxAfter, inflight + 1);
+      return ok(u, html('<h1>x</h1>'));
+    };
+    const r = await crawl('https://t.example', { fetcher, sleep: async (ms) => { waits.push(ms); await new Promise((res) => setTimeout(res, 1)); } });
+    expect(r.pages).toHaveLength(20);
+    expect(waits.filter((w) => w === 1000).length).toBeGreaterThan(5);
+    expect(maxAfter).toBeLessThanOrEqual(4);
+  });
+
   it('never runs more than 4 fetches at once', async () => {
     let inflight = 0;
     let max = 0;

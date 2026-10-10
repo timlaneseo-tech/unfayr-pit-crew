@@ -113,7 +113,12 @@ async function cmdCrawl(args: ParsedArgs) {
   const include = includeRaw !== undefined ? parseSections(includeRaw) : undefined;
   // PITCREW_CAP is a test-only override that can lower the 1,000 page cap (clamped to 1..1,000 in capFromEnv).
   const cap = capFromEnv(process.env.PITCREW_CAP);
-  const result = await crawl(origin, { fetcher, include: include?.length ? include : undefined, ...(cap !== undefined ? { cap } : {}) });
+  // --offset N skips the first N pages of the chosen sections, so a section over the cap can run in parts (pages 1,001 on).
+  const offsetRaw = flagString(args, 'offset');
+  const offset = offsetRaw === undefined ? 0 : Number(offsetRaw);
+  if (!Number.isInteger(offset) || offset < 0) fail(`--offset must be a whole number of pages, such as 1000.`);
+  if (offset && !include?.length) fail('--offset works with --include only, for example --include products --offset 1000.');
+  const result = await crawl(origin, { fetcher, include: include?.length ? include : undefined, ...(offset ? { offset } : {}), ...(cap !== undefined ? { cap } : {}) });
   if (result.robotsUnreachable) fail(`Couldn't read robots.txt (${result.robotsProblem ?? 'no answer'}) after 3 tries, so Pit Crew didn't crawl. Try again in a few minutes.`);
   const dropped = countBy(result.dropped, (d) => d.reason);
   if (result.capped && !include?.length) {
@@ -145,8 +150,8 @@ async function cmdCrawl(args: ParsedArgs) {
     }
   }
   writePages(run, pages);
-  const truncated = include?.length && result.capped
-    ? { truncatedTo: pages.length, message: result.selected !== undefined ? truncationMessage(pages.length, result.selected, include) : `Kept the first ${pages.length.toLocaleString('en-US')} pages in ${include.join(', ')}; there are more.` }
+  const truncated = include?.length && (result.capped || offset)
+    ? { truncatedTo: pages.length, message: result.selected !== undefined ? truncationMessage(pages.length, result.selected, include, offset) : `Kept the first ${pages.length.toLocaleString('en-US')} pages in ${include.join(', ')}; there are more.` }
     : {};
   writeFileSync(join(run, 'crawl.json'), JSON.stringify({
     origin, host, date, platform, source: result.source, capped: result.capped, sections: result.sections, dropped: result.dropped,

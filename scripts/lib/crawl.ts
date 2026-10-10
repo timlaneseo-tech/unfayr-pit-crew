@@ -37,6 +37,8 @@ export interface CrawlOptions {
   fetcher: Fetcher;
   cap?: number;
   include?: string[];
+  /** With include, from a sitemap: skip this many of the chosen pages first, so a section over the cap can run in parts. */
+  offset?: number;
   concurrency?: number;
   /** Waits between robots.txt tries; tests inject a no-op. */
   sleep?: (ms: number) => Promise<void>;
@@ -53,15 +55,21 @@ export function capFromEnv(raw: string | undefined): number | undefined {
   if (!raw || !Number.isFinite(n) || n <= 0) return undefined;
   return Math.max(1, Math.min(Math.floor(n), DEFAULT_CAP));
 }
-/** M3: a page that answers 429 or 503 is tried once more after Retry-After (at most 30 s). */
+/** M3: a page that answers 429 or 503 is tried again after Retry-After (at most 30 s), backing off 2, 4, 8, 16 s
+ *  without one, up to 5 tries in all: a large Shopify catalog stays rate limited for longer than a single wait. */
 const PAGE_RETRY_DEFAULT_S = 2;
 const PAGE_RETRY_MAX_S = 30;
+const PAGE_TRIES = 5;
+/** Once a store answers 429 or 503, the rest of the crawl runs one fetch at a time with this gap between fetches. */
+const SLOW_GAP_MS = 1000;
+interface Throttle { slow: boolean }
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 const listOf = (xs: string[]) => (xs.length <= 1 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs[xs.length - 1]}`);
 
 /** I6: the plain-English note when --include still left more pages than the cap. */
-export function truncationMessage(kept: number, total: number, sections: string[]): string {
+export function truncationMessage(kept: number, total: number, sections: string[], offset = 0): string {
+  if (offset) return `Kept pages ${fmt(offset + 1)} to ${fmt(offset + kept)} of ${fmt(total)} in ${listOf(sections)}.`;
   return `Kept the first ${fmt(kept)} of ${fmt(total)} pages in ${listOf(sections)}.`;
 }
 
@@ -238,10 +246,13 @@ function preFilter(url: string): DropReason | null {
   return null;
 }
 
-async function pool<T>(items: T[], concurrency: number, work: (item: T) => Promise<void>): Promise<void> {
+async function pool<T>(items: T[], concurrency: number, work: (item: T) => Promise<void>, throttle?: Throttle): Promise<void> {
   let i = 0;
-  const lanes = Array.from({ length: Math.max(1, Math.min(concurrency, items.length)) }, async () => {
-    while (i < items.length) await work(items[i++]);
+  const lanes = Array.from({ length: Math.max(1, Math.min(concurrency, items.length)) }, async (_, lane) => {
+    while (i < items.length) {
+      if (lane > 0 && throttle?.slow) return; // rate limited: only the first lane keeps going
+      await work(items[i++]);
+    }
   });
   await Promise.all(lanes);
 }
@@ -265,14 +276,17 @@ function linksIn(root: ReturnType<typeof parse>, base: string): string[] {
   return out;
 }
 
-async function inspect(fetcher: Fetcher, url: string, sleep: (ms: number) => Promise<void>): Promise<Verdict> {
+async function inspect(fetcher: Fetcher, url: string, sleep: (ms: number) => Promise<void>, throttle?: Throttle): Promise<Verdict> {
   let r;
   try {
+    if (throttle?.slow) await sleep(SLOW_GAP_MS);
     r = await fetcher(url);
-    if (r.status === 429 || r.status === 503) {
+    for (let attempt = 1; attempt < PAGE_TRIES && (r.status === 429 || r.status === 503); attempt++) {
+      if (throttle) throttle.slow = true;
       const h = Object.fromEntries(Object.entries(r.headers ?? {}).map(([k, v]) => [k.toLowerCase(), v]));
       const secs = Number(h['retry-after']);
-      await sleep(Math.min(Number.isFinite(secs) && secs > 0 ? secs : PAGE_RETRY_DEFAULT_S, PAGE_RETRY_MAX_S) * 1000);
+      const backoff = PAGE_RETRY_DEFAULT_S * 2 ** (attempt - 1);
+      await sleep(Math.min(Number.isFinite(secs) && secs > 0 ? secs : backoff, PAGE_RETRY_MAX_S) * 1000);
       r = await fetcher(url);
     }
   } catch {
@@ -330,6 +344,7 @@ export async function crawl(origin: string, opts: CrawlOptions): Promise<CrawlRe
   const cap = opts.cap ?? DEFAULT_CAP;
   const concurrency = opts.concurrency ?? 4;
   const include = opts.include?.map((s) => s.toLowerCase());
+  const throttle: Throttle = { slow: false };
   /** The include sections none of these URLs fall in, as a spreadable result field. */
   const emptyOf = (urls: string[]): { emptySections?: string[] } => {
     const empty = (include ?? []).filter((s) => !urls.some((u) => sectionOf(u) === s));
@@ -370,13 +385,14 @@ export async function crawl(origin: string, opts: CrawlOptions): Promise<CrawlRe
     if (!include && candidates.length > cap) return { pages: [], dropped, sections: homeKey(sections), source: 'sitemap', capped: true };
     let chosen = include ? candidates.filter((u) => include.includes(sectionOf(u))) : candidates;
     const selected = chosen.length;
+    if (include && opts.offset) chosen = chosen.slice(opts.offset);
     const capped = chosen.length > cap;
     if (capped) chosen = chosen.slice(0, cap);
 
     const verdicts = new Map<string, Verdict>();
     await pool(chosen, concurrency, async (u) => {
-      verdicts.set(u, await inspect(fetcher, u, sleep));
-    });
+      verdicts.set(u, await inspect(fetcher, u, sleep, throttle));
+    }, throttle);
     for (const u of chosen) {
       const v = verdicts.get(u)!;
       if (v.kind === 'keep') pages.push({ url: u, html: v.html, headers: v.headers });
@@ -407,8 +423,8 @@ export async function crawl(origin: string, opts: CrawlOptions): Promise<CrawlRe
       fetches += batch.length;
       const verdicts = new Map<string, Verdict>();
       await pool(batch, concurrency, async (u) => {
-        verdicts.set(u, await inspect(fetcher, u, sleep));
-      });
+        verdicts.set(u, await inspect(fetcher, u, sleep, throttle));
+      }, throttle);
       for (const u of batch) {
         const v = verdicts.get(u)!;
         if (v.kind === 'keep') {

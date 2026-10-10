@@ -1,7 +1,7 @@
 {
   "name": "pitcrew",
   "displayName": "Pit Crew",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pit fixes every page in one stop. You drive. Rewrites every page's title, meta description and H1 from your pages, search research and a short interview, in one naming style, then publishes the approved changes when you say so. Free, local, no telemetry.",
   "author": { "name": "Unfayr", "url": "https://unfayr.com" },
   "icon": "./assets/pit-crew-app-icon-512.png",

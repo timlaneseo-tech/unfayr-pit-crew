@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, readFileSync, renameSync, unlinkSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Field, Proposal } from './types.ts';
 
@@ -17,10 +17,26 @@ interface Handoff {
 const FIELDS: Field[] = ['title', 'meta', 'h1'];
 const file = (run: string) => join(run, 'onpage.json');
 
+/**
+ * Moves tmp over dest. On Windows a virus scanner or the search indexer can hold the file for a moment, so an
+ * EPERM, EACCES or EBUSY rename is tried again a few times and then falls back to copying over dest.
+ */
+export function replaceFile(tmp: string, dest: string, rename: (a: string, b: string) => void = renameSync): void {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try { rename(tmp, dest); return; } catch (e) {
+      if (!['EPERM', 'EACCES', 'EBUSY'].includes((e as NodeJS.ErrnoException).code ?? '')) throw e;
+      const until = Date.now() + 50 * (attempt + 1);
+      while (Date.now() < until) { /* short wait for the lock to clear */ }
+    }
+  }
+  copyFileSync(tmp, dest);
+  unlinkSync(tmp);
+}
+
 function save(run: string, data: Handoff): void {
   const tmp = `${file(run)}.tmp`;
   writeFileSync(tmp, JSON.stringify(data, null, 2) + '\n');
-  renameSync(tmp, file(run));
+  replaceFile(tmp, file(run));
 }
 
 function load(run: string): Handoff | null {

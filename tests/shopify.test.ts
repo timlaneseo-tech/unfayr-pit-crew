@@ -200,6 +200,12 @@ describe('shopifyAdapter throttling', () => {
     await mk(f).write(prod, { title: 'x' });
     expect(waits).toEqual([2000]);
   });
+  it('retries a transient 502, 503 or 504 like a throttle, then succeeds', async () => {
+    const f = fake((_c, n) => n === 1 ? { status: 502 } : n === 2 ? { status: 503 } : fx('product-update-ok'));
+    await mk(f).write(prod, { title: 'x' });
+    expect(f.calls).toHaveLength(3);
+    expect(waits).toEqual([2000, 2000]);
+  });
   it('gives up after 3 retries', async () => {
     const f = fake(() => ({ status: 429 }));
     await expect(mk(f).write(prod, { title: 'x' })).rejects.toThrow(/throttl|429/i);
